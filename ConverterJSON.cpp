@@ -11,6 +11,7 @@ std::vector<std::string> ConverterJSON::getTextDocument() {
         inputFile.close();
         wordsInFilesVector.resize(JSONservant["files"].size());
         for (int i = 0; i < JSONservant["files"].size(); ++i) {
+            if(JSONservant["files"][i].empty()) continue;
             inputFile.open(JSONservant["files"][i]);
             if (inputFile.is_open()) {
                 if (i < wordsInFilesVector.size()) {
