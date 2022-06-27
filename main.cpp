@@ -3,7 +3,6 @@
 #include "gtest/gtest.h"
 #include "JSONMissingExeption.h"
 #include "InvertedIndex.h"
-#include "nlohmann/json.hpp"
 #include "ConverterJSON.h"
 
 

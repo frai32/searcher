@@ -14,10 +14,9 @@ FetchContent_MakeAvailable(googletest)
 
 add_compile_definitions(TESTS)
 
+
 set(CMAKE_CXX_STANDARD 20)
 
-add_subdirectory(nlohmann_json)
+add_executable(searcher main.cpp ConverterJSON.cpp ConverterJSON.h JSONMissingExeption.cpp JSONMissingExeption.h InvertedIndex.cpp InvertedIndex.h tests.cpp SearchServer.cpp SearchServer.h json.hpp)
 
-add_executable(searcher main.cpp ConverterJSON.cpp ConverterJSON.h JSONMissingExeption.cpp JSONMissingExeption.h InvertedIndex.cpp InvertedIndex.h tests.cpp SearchServer.cpp SearchServer.h)
-
-target_link_libraries(searcher PRIVATE nlohmann_json::nlohmann_json gtest_main)
+target_link_libraries(searcher PRIVATE gtest_main)
