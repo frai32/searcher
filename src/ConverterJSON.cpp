@@ -11,7 +11,11 @@ std::vector<std::string> ConverterJSON::getTextDocument() {
         inputFile.close();
         wordsInFilesVector.resize(JSONservant["files"].size());
         for (int i = 0; i < JSONservant["files"].size(); ++i) {
-            if(JSONservant["files"][i].empty()) continue;
+            if(JSONservant["files"][i].empty())
+            {
+                std::cerr<<"file pass is empty\n";
+                continue;
+            }
             inputFile.open(JSONservant["files"][i]);
             if (inputFile.is_open()) {
                 if (i < wordsInFilesVector.size()) {
@@ -23,7 +27,7 @@ std::vector<std::string> ConverterJSON::getTextDocument() {
                 }
                 inputFile.close();
             } else {
-                std::cout << "file couldn't open\n";
+                std::cerr<<"file couldn't open\n";
                 continue;
             }
         }
@@ -51,10 +55,11 @@ std::vector<std::string> ConverterJSON::GetRequests() {
         inputFile>>JSONservant;
         inputFile.close();
         std::vector<std::string> requests(JSONservant["requests"].size());
-        for(int i = 0; i<requests.size(); ++i)
-        {
-            requests[i] = JSONservant["requests"][i];
-        }
+
+            for (int i = 0; i < requests.size(); ++i) {
+                requests[i] = JSONservant["requests"][i];
+            }
+
 
         return requests;
     }

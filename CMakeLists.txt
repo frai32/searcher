@@ -12,7 +12,7 @@ set(gtest_disable_pthreads on)
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
-add_compile_definitions(TESTS)
+add_compile_definitions(RELISE)
 
 
 set(CMAKE_CXX_STANDARD 20)
@@ -23,10 +23,10 @@ add_executable(searcher main.cpp src/ConverterJSON.cpp
                                  include/JSONMissingExeption.h
                                  src/InvertedIndex.cpp
                                  include/InvertedIndex.h
-                                 Tests/tests.cpp
                                  src/SearchServer.cpp
                                  include/SearchServer.h
                                  include/json.hpp)
+
 
 target_include_directories(searcher PUBLIC include src Tests)
 

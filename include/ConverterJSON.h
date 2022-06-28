@@ -35,6 +35,8 @@ public:
     */
     void putAnswers(std::vector<std::vector<std::pair<int, float>>>answers);
 
+
+
 private:
     std::ofstream outputFile;
     std::ifstream inputFile;
