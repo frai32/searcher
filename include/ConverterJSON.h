@@ -4,6 +4,9 @@
 #include <fstream>
 #include <iostream>
 #include "json.hpp"
+#include "SearchServer.h"
+
+struct RelativeIndex;
 
 class ConverterJSON {
 public:
@@ -33,7 +36,7 @@ public:
     /**
     * Положить в файл answers.json результаты поисковых запросов
     */
-    void putAnswers(std::vector<std::vector<std::pair<int, float>>>answers);
+    void putAnswers(std::vector<std::vector<RelativeIndex>>);
 
 
 

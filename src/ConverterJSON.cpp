@@ -5,9 +5,9 @@ std::vector<std::string> ConverterJSON::getTextDocument() {
     inputFile.open("config.json");
     std::vector<std::string>wordsInFilesVector;
     if(inputFile.is_open()) {
-        std::cout << "get worlds!\n";
+
         inputFile >> JSONservant;
-        std::cout << "world getted!\n";
+
         inputFile.close();
         wordsInFilesVector.resize(JSONservant["files"].size());
         for (int i = 0; i < JSONservant["files"].size(); ++i) {
@@ -67,7 +67,7 @@ std::vector<std::string> ConverterJSON::GetRequests() {
     return std::vector<std::string>();
 }
 
-void ConverterJSON::putAnswers(std::vector<std::vector<std::pair<int, float>>> answers) {
+void ConverterJSON::putAnswers(std::vector<std::vector<RelativeIndex>> answers) {
     nlohmann::json JSONservant;
     std::vector<std::string> request = GetRequests();
 
@@ -83,8 +83,8 @@ void ConverterJSON::putAnswers(std::vector<std::vector<std::pair<int, float>>> a
             nlohmann::json jsonAnswers;
             for(auto a: answers[i]) {
                 nlohmann::json JSONrank;
-                JSONrank["docid:"] = a.first;
-                JSONrank["rank:"] = a.second;
+                JSONrank["docid:"] = a.doc_id;
+                JSONrank["rank:"] = a.rank;
                 jsonAnswers.push_back(JSONrank);
             }
             JSONservant["Answers"][request[i]]["relevance"] = jsonAnswers;
