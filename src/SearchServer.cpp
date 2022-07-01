@@ -35,8 +35,6 @@ std::vector<std::vector<RelativeIndex>> SearchServer::search(const std::vector<s
             }
         }
 
-
-
         std::multimap<size_t , float, std::greater<>> sorted_absolute_index;
         for(auto& e : doc_id_absolute_index) {
             sorted_absolute_index.insert(std::pair(e.second, e.first));

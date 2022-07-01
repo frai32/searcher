@@ -19,15 +19,16 @@ set(CMAKE_CXX_STANDARD 20)
 
 add_executable(searcher main.cpp src/ConverterJSON.cpp
                                  include/ConverterJSON.h
-                                 src/JSONMissingExeption.cpp
-                                 include/JSONMissingExeption.h
                                  src/InvertedIndex.cpp
                                  include/InvertedIndex.h
                                  src/SearchServer.cpp
                                  include/SearchServer.h
-                                 include/json.hpp)
+                                 include/json.hpp
+        include/ExeptionClasses/CONFIGMissingExeption.h
+        src/ExeptionClasses/CONFIGMissingExeption.cpp
+        )
 
 
-target_include_directories(searcher PUBLIC include src Tests)
+target_include_directories(searcher PUBLIC include src Tests include/ExeptionClasses src/ExeptionClasses)
 
 target_link_libraries(searcher PRIVATE gtest_main)

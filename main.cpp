@@ -1,6 +1,7 @@
 #include <iostream>
 #include <algorithm>
-#include "JSONMissingExeption.h"
+#include "CONFIGMissingExeption.h"
+
 #include "InvertedIndex.h"
 #include "ConverterJSON.h"
 #include "SearchServer.h"
@@ -13,47 +14,23 @@ using namespace  nlohmann;
 
 void showComands();
 
-void checkConfigs()
-{
-    std::ifstream checking;
-    checking.open("config.json");
-    if(checking.is_open())
-    {
-        json configCheck;
-        checking>>configCheck;
+void checkConfigs();
 
-        if(!configCheck["config"].empty())
-        {
-            std::cout<<configCheck["config"]["name"]<<std::endl;
-            std::cout<<configCheck["config"]["version"]<<std::endl;
-            std::cout<<"input ? for help\n";
-            checking.close();
-        }
-        else
-        {
-            checking.close();
-            throw JSONMissingExeption("config file is empty");
-        }
 
-    }
-    else
-    {
-        checking.close();
-        throw JSONMissingExeption("config file is missing");
-    }
-}
 
 int main() {
 
     try {
         checkConfigs();
 
+
     }
-    catch(JSONMissingExeption ex)
+    catch(CONFIGMissingExeption ex)
     {
         std::cerr<<"Error: "<<ex.what()<<std::endl;
         return 1;
     }
+
 
     bool isWork = true;
     std::string comand;
@@ -78,7 +55,6 @@ int main() {
            InvertedIndex idx;
            idx.UpdateDocumentBase(converter.getTextDocument());
            SearchServer srv(idx);
-
            converter.putAnswers(srv.search(converter.GetRequests()));
 
            std::cout<<"Search completed. Check answers.json\n";
@@ -100,6 +76,38 @@ void showComands()
     std::cout<<"s - make search\n";
     std::cout<<"q - exit from app\n";
 }
+
+void checkConfigs()
+{
+    std::ifstream checking;
+    checking.open("config.json");
+    if(checking.is_open())
+    {
+        json configCheck;
+        checking>>configCheck;
+
+        if(!configCheck["config"].empty())
+        {
+            std::cout<<configCheck["config"]["name"]<<std::endl;
+            std::cout<<configCheck["config"]["version"]<<std::endl;
+            std::cout<<"input ? for help\n";
+            checking.close();
+        }
+        else
+        {
+            checking.close();
+            throw CONFIGMissingExeption("config file is empty");
+        }
+
+    }
+    else
+    {
+        checking.close();
+        throw CONFIGMissingExeption("config file is missing");
+    }
+}
+
+
 
 
 
