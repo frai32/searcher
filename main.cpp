@@ -1,36 +1,58 @@
 #include <iostream>
 #include <algorithm>
-#include "CONFIGMissingExeption.h"
-
 #include "InvertedIndex.h"
 #include "ConverterJSON.h"
 #include "SearchServer.h"
-
-
-
 
 #ifndef  TESTS
 using namespace  nlohmann;
 
 void showComands();
 
-void checkConfigs();
-
 
 
 int main() {
 
     try {
-        checkConfigs();
-
+        ConverterJSON j;
+        j.checkConfigs();
+        j.checkRequests();
 
     }
     catch(CONFIGMissingExeption ex)
     {
-        std::cerr<<"Error: "<<ex.what()<<std::endl;
+        std::cout<<"Error: "<<ex.what();
         return 1;
     }
+    catch (REQUESTSMissingExeption ex)
+    {
+        std::cout<<"Error: "<<ex.what();
 
+        while(true)
+        {
+            std::cout<<"Would you want to create this file?(y/n)\n";
+            std::string answer;
+            std::cin>>answer;
+            if(answer == "y")
+            {
+                std::ofstream file("requests.json");
+                json requests;
+                requests["requests"] = {};
+                file<<requests;
+                file.close();
+                std::cout<<"file created!\n";
+                break;
+            }
+            else if (answer == "n")
+            {
+                break;
+            }
+            else
+            {
+                std::cout<<"wrong comand!\n";
+            }
+        }
+    }
 
     bool isWork = true;
     std::string comand;
@@ -50,21 +72,20 @@ int main() {
         }
         else if(comand == "s")
         {
-           std::cout<<"start searching\n";
-           ConverterJSON converter;
-           InvertedIndex idx;
-           idx.UpdateDocumentBase(converter.getTextDocument());
-           SearchServer srv(idx);
-           converter.putAnswers(srv.search(converter.GetRequests()));
+            std::cout<<"start searching\n";
+            ConverterJSON converter;
+            InvertedIndex idx;
+            idx.UpdateDocumentBase(converter.getTextDocument());
+            SearchServer srv(idx);
+            converter.putAnswers(srv.search(converter.GetRequests()));
 
-           std::cout<<"Search completed. Check answers.json\n";
+            std::cout<<"Search completed. Check answers.json\n";
         }
         else
         {
             std::cout<<"Wrong command\n";
         }
     }
-
     return 0;
 }
 
@@ -76,39 +97,5 @@ void showComands()
     std::cout<<"s - make search\n";
     std::cout<<"q - exit from app\n";
 }
-
-void checkConfigs()
-{
-    std::ifstream checking;
-    checking.open("config.json");
-    if(checking.is_open())
-    {
-        json configCheck;
-        checking>>configCheck;
-
-        if(!configCheck["config"].empty())
-        {
-            std::cout<<configCheck["config"]["name"]<<std::endl;
-            std::cout<<configCheck["config"]["version"]<<std::endl;
-            std::cout<<"input ? for help\n";
-            checking.close();
-        }
-        else
-        {
-            checking.close();
-            throw CONFIGMissingExeption("config file is empty");
-        }
-
-    }
-    else
-    {
-        checking.close();
-        throw CONFIGMissingExeption("config file is missing");
-    }
-}
-
-
-
-
 
 #endif

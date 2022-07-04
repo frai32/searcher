@@ -103,3 +103,62 @@ void ConverterJSON::putAnswers(std::vector<std::vector<RelativeIndex>> answers) 
         newAnswersFile.close();
     }
 }
+
+void ConverterJSON::checkConfigs() {
+    std::ifstream checking;
+    checking.open("config.json");
+    if(checking.is_open())
+    {
+        nlohmann::json configCheck;
+        checking>>configCheck;
+
+        if(!configCheck["config"].empty())
+        {
+            std::cout<<configCheck["config"]["name"]<<std::endl;
+            std::cout<<configCheck["config"]["version"]<<std::endl;
+            std::cout<<"input ? for help\n";
+            checking.close();
+        }
+        else
+        {
+            checking.close();
+            throw CONFIGMissingExeption("config file is empty");
+        }
+
+    }
+    else
+    {
+        checking.close();
+        throw CONFIGMissingExeption("config file is missing");
+    }
+}
+
+void ConverterJSON::checkRequests() {
+    std::ifstream file;
+    file.open("requests.json");
+
+    if(file.is_open())
+    {
+        nlohmann::json requestsCheck;
+        file>>requestsCheck;
+        if(requestsCheck["requests"].empty())
+        {
+            file.close();
+            throw REQUESTSMissingExeption("Request.json have not requests\n");
+        }
+        else
+        {
+            std::cout<<"In requests.json have fallowing requests:\n";
+            for(std::string rec : requestsCheck["requests"])
+            {
+                std::cout<<rec<<std::endl;
+            }
+            file.close();
+        }
+    }
+    else
+    {
+        file.close();
+        throw REQUESTSMissingExeption("File requests.json is missing\n");
+    }
+}

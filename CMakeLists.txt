@@ -26,7 +26,7 @@ add_executable(searcher main.cpp src/ConverterJSON.cpp
                                  include/json.hpp
         include/ExeptionClasses/CONFIGMissingExeption.h
         src/ExeptionClasses/CONFIGMissingExeption.cpp
-        )
+        src/ExeptionClasses/REQUESTSMissingExeption.cpp include/ExeptionClasses/REQUESTSMissingExeption.h)
 
 
 target_include_directories(searcher PUBLIC include src Tests include/ExeptionClasses src/ExeptionClasses)

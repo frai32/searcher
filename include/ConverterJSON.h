@@ -5,6 +5,8 @@
 #include <iostream>
 #include "json.hpp"
 #include "SearchServer.h"
+#include "CONFIGMissingExeption.h"
+#include "REQUESTSMissingExeption.h"
 
 struct RelativeIndex;
 
@@ -38,7 +40,11 @@ public:
     */
     void putAnswers(std::vector<std::vector<RelativeIndex>>);
 
-
+    /**
+     * Проверка есть на корекктность файла config.json
+     */
+     void checkConfigs();
+     void checkRequests();
 
 private:
     std::ofstream outputFile;
