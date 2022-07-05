@@ -3,51 +3,18 @@
 std::vector<std::vector<RelativeIndex>> SearchServer::search(const std::vector<std::string> &queries_input) {
 
     std::vector<std::vector<RelativeIndex>> allIndexes;
-    auto dict = _index.GetFreq_Dictionary();
+    std::vector<std::thread> requestsTreads;
     for(size_t i = 0; i<queries_input.size(); ++i)
     {
-        std::vector<std::string> vec{parse_request_into_vector(queries_input[i])};
-        std::map<std::string, float> request_absolute_index{get_indexes_for_request_words(vec)};
+       requestsTreads.emplace_back(&SearchServer::ThreadSearch, this,  queries_input[i]);
+    }
 
-        std::multimap<float, std::string> absolute_index_request;
-        for(auto& e : request_absolute_index) {
-            absolute_index_request.insert(std::pair(e.second, e.first));
-        }
-
-        std::map<size_t ,float> doc_id_absolute_index;
-        for(auto it = dict[absolute_index_request.begin()->second].begin();
-            it != dict[absolute_index_request.begin()->second].end();
-            ++it
-                ) {
-            doc_id_absolute_index[it->doc_id] = 0; /* пока просто заполняем ключи в map */
-        }
-
-        for(auto& doc_id_frequency: dict) {
-            /* частоту в map добавляем только если слово есть в запросе */
-            if(queries_input[i].find(doc_id_frequency.first) != std::string::npos) {
-                for_each(doc_id_frequency.second.begin(), doc_id_frequency.second.end(),
-                         [&doc_id_absolute_index](auto& item)
-                         {
-                             /* Если слово есть в запросе и документ есть в map по самому редкому слову */
-                             if(doc_id_absolute_index.count(item.doc_id))
-                                 doc_id_absolute_index[item.doc_id] += item.count;
-                         });
-            }
-        }
-
-        std::multimap<size_t , float, std::greater<>> sorted_absolute_index;
-        for(auto& e : doc_id_absolute_index) {
-            sorted_absolute_index.insert(std::pair(e.second, e.first));
-        }
-
-       std::vector<RelativeIndex> vector_relative_index;
-       for(auto& item: sorted_absolute_index)
-        {
-            RelativeIndex r{.doc_id = (size_t)item.second, .rank = (float)item.first / sorted_absolute_index.begin()->first};
-            vector_relative_index.emplace_back(r);
-        }
-
-        allIndexes.push_back(vector_relative_index);
+    for(size_t i =0; i < requestsTreads.size(); ++i)
+    {
+        requestsTreads[i].join();
+        searchMutex.lock();
+            allIndexes.emplace_back(singleIndex);
+        searchMutex.unlock();
     }
 
     return allIndexes;
@@ -83,6 +50,58 @@ std::map<std::string, float> SearchServer::get_indexes_for_request_words(std::ve
     }
 
     return m;
+}
+
+void SearchServer::ThreadSearch(const std::string &query) {
+
+    indexMutex.lock();
+        auto dict = _index.GetFreq_Dictionary();
+    indexMutex.unlock();
+
+    std::vector<std::string> vec{parse_request_into_vector(query)};
+    std::map<std::string, float> request_absolute_index{get_indexes_for_request_words(vec)};
+
+    std::multimap<float, std::string> absolute_index_request;
+    for(auto& e : request_absolute_index) {
+        absolute_index_request.insert(std::pair(e.second, e.first));
+    }
+
+    std::map<size_t ,float> doc_id_absolute_index;
+    for(auto it = dict[absolute_index_request.begin()->second].begin();
+        it != dict[absolute_index_request.begin()->second].end();
+        ++it
+            ) {
+        doc_id_absolute_index[it->doc_id] = 0; /* пока просто заполняем ключи в map */
+    }
+
+    for(auto& doc_id_frequency: dict) {
+        /* частоту в map добавляем только если слово есть в запросе */
+        if(query.find(doc_id_frequency.first) != std::string::npos) {
+            for_each(doc_id_frequency.second.begin(), doc_id_frequency.second.end(),
+                     [&doc_id_absolute_index](auto& item)
+                     {
+                         /* Если слово есть в запросе и документ есть в map по самому редкому слову */
+                         if(doc_id_absolute_index.count(item.doc_id))
+                             doc_id_absolute_index[item.doc_id] += item.count;
+                     });
+        }
+    }
+
+    std::multimap<size_t , float, std::greater<>> sorted_absolute_index;
+    for(auto& e : doc_id_absolute_index) {
+        sorted_absolute_index.insert(std::pair(e.second, e.first));
+    }
+
+    std::vector<RelativeIndex> vector_relative_index;
+    for(auto& item: sorted_absolute_index)
+    {
+        RelativeIndex r{.doc_id = (size_t)item.second, .rank = (float)item.first / sorted_absolute_index.begin()->first};
+        vector_relative_index.emplace_back(r);
+    }
+
+    indexMutex.lock();
+        singleIndex = vector_relative_index;
+    indexMutex.unlock();
 }
 
 

@@ -1,4 +1,6 @@
 #pragma once
+#include <thread>
+#include <mutex>
 #include <iostream>
 #include <vector>
 #include <string>
@@ -41,17 +43,19 @@ public:
     std::vector<std::vector<RelativeIndex>> search(const std::vector<std::string>& queries_input);
 
 
-
-
 private:
 
     std::vector<std::string> parse_request_into_vector(const std::string& str);
 
     std::map<std::string, float> get_indexes_for_request_words(std::vector<std::string>& vec);
 
+    void ThreadSearch(const std::string &query);
+
     InvertedIndex _index;
 
+    std::vector<RelativeIndex> singleIndex;
 
-
+    std::mutex indexMutex;
+    std::mutex searchMutex;
 };
 
