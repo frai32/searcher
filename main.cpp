@@ -12,9 +12,10 @@ void showComands();
 
 
 int main() {
+    ConverterJSON j;
 
     try {
-        ConverterJSON j;
+
         j.checkConfigs();
         j.checkRequests();
 
@@ -27,29 +28,26 @@ int main() {
     catch (REQUESTSMissingExeption ex)
     {
         std::cout<<"Error: "<<ex.what();
-
-        while(true)
+        if(j.getIsEmpty())
         {
-            std::cout<<"Would you want to create this file?(y/n)\n";
-            std::string answer;
-            std::cin>>answer;
-            if(answer == "y")
-            {
-                std::ofstream file("requests.json");
-                json requests;
-                requests["requests"] = {};
-                file<<requests;
-                file.close();
-                std::cout<<"file created!\n";
-                break;
-            }
-            else if (answer == "n")
-            {
-                break;
-            }
-            else
-            {
-                std::cout<<"wrong comand!\n";
+            while (true) {
+
+                std::cout << "Would you want to create this file?(y/n)\n";
+                std::string answer;
+                std::cin >> answer;
+                if (answer == "y") {
+                    std::ofstream file("requests.json");
+                    json requests;
+                    requests["requests"] = {};
+                    file << requests;
+                    file.close();
+                    std::cout << "file created!\n";
+                    break;
+                } else if (answer == "n") {
+                    break;
+                } else {
+                    std::cout << "wrong comand!\n";
+                }
             }
         }
     }

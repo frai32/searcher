@@ -45,10 +45,12 @@ public:
      */
      void checkConfigs();
      void checkRequests();
+     bool getIsEmpty();
 
 private:
     std::ofstream outputFile;
     std::ifstream inputFile;
+    bool isEmpty; //если в файле requests.json есть запросы, или файла нет то значение будет true
 
 };
 

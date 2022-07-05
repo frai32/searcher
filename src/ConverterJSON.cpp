@@ -143,11 +143,13 @@ void ConverterJSON::checkRequests() {
         file>>requestsCheck;
         if(requestsCheck["requests"].empty())
         {
+            isEmpty = false;
             file.close();
             throw REQUESTSMissingExeption("Request.json have not requests\n");
         }
         else
         {
+            isEmpty = true;
             std::cout<<"In requests.json have fallowing requests:\n";
             for(std::string rec : requestsCheck["requests"])
             {
@@ -158,7 +160,12 @@ void ConverterJSON::checkRequests() {
     }
     else
     {
+        isEmpty = true;
         file.close();
         throw REQUESTSMissingExeption("File requests.json is missing\n");
     }
+}
+
+bool ConverterJSON::getIsEmpty() {
+    return isEmpty;
 }
