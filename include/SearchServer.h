@@ -6,6 +6,7 @@
 #include <string>
 #include <sstream>
 #include <algorithm>
+#include <functional>
 #include "InvertedIndex.h"
 #include "ConverterJSON.h"
 
@@ -49,13 +50,11 @@ private:
 
     std::map<std::string, float> get_indexes_for_request_words(std::vector<std::string>& vec);
 
-    void ThreadSearch(const std::string &query);
+    void ThreadSearch(const std::string &query, std::vector<std::vector<RelativeIndex>>& ref);
 
     InvertedIndex _index;
 
-    std::vector<RelativeIndex> singleIndex;
-
     std::mutex indexMutex;
-    std::mutex searchMutex;
+
 };
 

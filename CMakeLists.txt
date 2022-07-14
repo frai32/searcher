@@ -12,7 +12,7 @@ set(gtest_disable_pthreads on)
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
-add_compile_definitions(RELISE)
+add_compile_definitions(TESTS)
 
 
 set(CMAKE_CXX_STANDARD 20)
