@@ -1,4 +1,6 @@
 #include "SearchServer.h"
+#include <algorithm>
+#include <functional>
 
 std::vector<std::vector<RelativeIndex>> SearchServer::search(const std::vector<std::string> &queries_input) {
 

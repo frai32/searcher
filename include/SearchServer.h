@@ -5,8 +5,6 @@
 #include <vector>
 #include <string>
 #include <sstream>
-#include <algorithm>
-#include <functional>
 #include "InvertedIndex.h"
 #include "ConverterJSON.h"
 
