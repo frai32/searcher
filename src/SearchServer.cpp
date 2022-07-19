@@ -8,13 +8,7 @@ std::vector<std::vector<RelativeIndex>> SearchServer::search(const std::vector<s
     std::vector<std::thread> requestsTreads;
     for(size_t i = 0; i<queries_input.size(); ++i)
     {
-       requestsTreads.emplace_back(&SearchServer::ThreadSearch, this,  queries_input[i], std::ref(allIndexes));
-    }
-
-    for(size_t i =0; i < requestsTreads.size(); ++i)
-    {
-        requestsTreads[i].join();
-
+       requestsTreads.emplace_back(&SearchServer::ThreadSearch, this,  queries_input[i], std::ref(allIndexes)).join();
     }
 
     return allIndexes;
@@ -56,7 +50,7 @@ void SearchServer::ThreadSearch(const std::string &query, std::vector<std::vecto
 
     indexMutex.lock();
         auto dict = _index.GetFreq_Dictionary();
-    indexMutex.unlock();
+
 
     std::vector<std::string> vec{parse_request_into_vector(query)};
     std::map<std::string, float> request_absolute_index{get_indexes_for_request_words(vec)};
@@ -99,7 +93,7 @@ void SearchServer::ThreadSearch(const std::string &query, std::vector<std::vecto
         vector_relative_index.emplace_back(r);
     }
 
-    indexMutex.lock();
+
         ref.emplace_back(vector_relative_index);
     indexMutex.unlock();
 }

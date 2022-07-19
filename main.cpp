@@ -12,7 +12,7 @@ void showComands();
 int main() {
     ConverterJSON j;
 
-    try {
+  /* try {
 
         j.checkConfigs();
         j.checkRequests();
@@ -81,7 +81,7 @@ int main() {
         {
             std::cout<<"Wrong command\n";
         }
-    }
+    }*/
     return 0;
 }
 
