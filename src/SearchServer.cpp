@@ -1,6 +1,7 @@
 #include "SearchServer.h"
 #include <algorithm>
 #include <functional>
+#include <chrono>
 
 std::vector<std::vector<RelativeIndex>> SearchServer::search(const std::vector<std::string> &queries_input) {
 
@@ -9,6 +10,7 @@ std::vector<std::vector<RelativeIndex>> SearchServer::search(const std::vector<s
     for(size_t i = 0; i<queries_input.size(); ++i)
     {
        requestsTreads.emplace_back(&SearchServer::ThreadSearch, this,  queries_input[i], std::ref(allIndexes)).join();
+       std::this_thread::sleep_for(std::chrono::microseconds(100));
     }
 
     return allIndexes;
@@ -50,7 +52,7 @@ void SearchServer::ThreadSearch(const std::string &query, std::vector<std::vecto
 
     indexMutex.lock();
         auto dict = _index.GetFreq_Dictionary();
-
+    indexMutex.unlock();
 
     std::vector<std::string> vec{parse_request_into_vector(query)};
     std::map<std::string, float> request_absolute_index{get_indexes_for_request_words(vec)};
@@ -93,7 +95,7 @@ void SearchServer::ThreadSearch(const std::string &query, std::vector<std::vecto
         vector_relative_index.emplace_back(r);
     }
 
-
+    indexMutex.lock();
         ref.emplace_back(vector_relative_index);
     indexMutex.unlock();
 }

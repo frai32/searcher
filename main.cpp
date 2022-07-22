@@ -10,9 +10,9 @@ void showComands();
 
 
 int main() {
-    ConverterJSON j;
+   /* ConverterJSON j;
 
-  /* try {
+   try {
 
         j.checkConfigs();
         j.checkRequests();
