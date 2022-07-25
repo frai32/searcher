@@ -17,8 +17,8 @@ std::vector<std::vector<RelativeIndex>> SearchServer::search(const std::vector<s
 }
 
 SearchServer::SearchServer(InvertedIndex &idx) : _index(idx){
-    ConverterJSON json;
-    _index.UpdateDocumentBase(json.getTextDocument());
+    //ConverterJSON json;
+    //_index.UpdateDocumentBase(json.getTextDocument());
 }
 
 std::vector<std::string> SearchServer::parse_request_into_vector(const std::string &str) {
