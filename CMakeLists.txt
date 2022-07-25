@@ -13,8 +13,6 @@ enable_testing()
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_compile_definitions(RELISE)
-
 set(SRC_FILE src/ConverterJSON.cpp
              src/InvertedIndex.cpp
              src/SearchServer.cpp
@@ -32,7 +30,7 @@ set(HEDER_FILES include/ConverterJSON.h
 
 add_executable(searcher main.cpp ${SRC_FILE} ${HEDER_FILES})
 
-add_executable(searcher_test main.cpp Tests/tests.cpp ${SRC_FILE} ${HEDER_FILES})
+add_executable(searcher_test Tests/tests.cpp ${SRC_FILE} ${HEDER_FILES})
 
 target_include_directories(searcher PUBLIC include src Tests include/ExeptionClasses src/ExeptionClasses)
 

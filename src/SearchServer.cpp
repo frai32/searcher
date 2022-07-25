@@ -52,7 +52,7 @@ void SearchServer::ThreadSearch(const std::string &query, std::vector<std::vecto
 
     indexMutex.lock();
         auto dict = _index.GetFreq_Dictionary();
-    indexMutex.unlock();
+
 
     std::vector<std::string> vec{parse_request_into_vector(query)};
     std::map<std::string, float> request_absolute_index{get_indexes_for_request_words(vec)};
@@ -95,7 +95,7 @@ void SearchServer::ThreadSearch(const std::string &query, std::vector<std::vecto
         vector_relative_index.emplace_back(r);
     }
 
-    indexMutex.lock();
+
         ref.emplace_back(vector_relative_index);
     indexMutex.unlock();
 }

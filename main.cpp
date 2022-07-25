@@ -2,7 +2,7 @@
 #include "ConverterJSON.h"
 #include "SearchServer.h"
 
-#ifndef  TESTS
+
 using namespace  nlohmann;
 
 void showComands();
@@ -10,7 +10,7 @@ void showComands();
 
 
 int main() {
-   /* ConverterJSON j;
+   ConverterJSON j;
 
    try {
 
@@ -81,7 +81,7 @@ int main() {
         {
             std::cout<<"Wrong command\n";
         }
-    }*/
+    }
     return 0;
 }
 
@@ -94,4 +94,3 @@ void showComands()
     std::cout<<"q - exit from app\n";
 }
 
-#endif
