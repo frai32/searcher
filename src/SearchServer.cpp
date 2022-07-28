@@ -10,7 +10,6 @@ std::vector<std::vector<RelativeIndex>> SearchServer::search(const std::vector<s
     for(size_t i = 0; i<queries_input.size(); ++i)
     {
        requestsTreads.emplace_back(&SearchServer::ThreadSearch, this,  queries_input[i], std::ref(allIndexes)).join();
-       std::this_thread::sleep_for(std::chrono::microseconds(100));
     }
 
     return allIndexes;
@@ -50,9 +49,11 @@ std::map<std::string, float> SearchServer::get_indexes_for_request_words(std::ve
 
 void SearchServer::ThreadSearch(const std::string &query, std::vector<std::vector<RelativeIndex>>& ref) {
 
-    indexMutex.lock();
-        auto dict = _index.GetFreq_Dictionary();
+    std::unique_lock<std::mutex> uniqueMutex (indexMutex, std::defer_lock);
 
+    uniqueMutex.lock();
+        auto dict = _index.GetFreq_Dictionary();
+   uniqueMutex.unlock();
 
     std::vector<std::string> vec{parse_request_into_vector(query)};
     std::map<std::string, float> request_absolute_index{get_indexes_for_request_words(vec)};
@@ -62,42 +63,43 @@ void SearchServer::ThreadSearch(const std::string &query, std::vector<std::vecto
         absolute_index_request.insert(std::pair(e.second, e.first));
     }
 
-    std::map<size_t ,float> doc_id_absolute_index;
-    for(auto it = dict[absolute_index_request.begin()->second].begin();
-        it != dict[absolute_index_request.begin()->second].end();
-        ++it
-            ) {
-        doc_id_absolute_index[it->doc_id] = 0; /* пока просто заполняем ключи в map */
-    }
-
-    for(auto& doc_id_frequency: dict) {
-        /* частоту в map добавляем только если слово есть в запросе */
-        if(query.find(doc_id_frequency.first) != std::string::npos) {
-            for_each(doc_id_frequency.second.begin(), doc_id_frequency.second.end(),
-                     [&doc_id_absolute_index](auto& item)
-                     {
-                         /* Если слово есть в запросе и документ есть в map по самому редкому слову */
-                         if(doc_id_absolute_index.count(item.doc_id))
-                             doc_id_absolute_index[item.doc_id] += item.count;
-                     });
+    if(!absolute_index_request.empty()) {
+        std::map<size_t, float> doc_id_absolute_index;
+        for (auto it = dict[absolute_index_request.begin()->second].begin();
+             it != dict[absolute_index_request.begin()->second].end();
+             ++it
+                ) {
+            doc_id_absolute_index[it->doc_id] = 0; /* пока просто заполняем ключи в map */
         }
-    }
 
-    std::multimap<size_t , float, std::greater<>> sorted_absolute_index;
-    for(auto& e : doc_id_absolute_index) {
-        sorted_absolute_index.insert(std::pair(e.second, e.first));
-    }
+        for (auto &doc_id_frequency: dict) {
+            /* частоту в map добавляем только если слово есть в запросе */
+            if (query.find(doc_id_frequency.first) != std::string::npos) {
+                for_each(doc_id_frequency.second.begin(), doc_id_frequency.second.end(),
+                         [&doc_id_absolute_index](auto &item) {
+                             /* Если слово есть в запросе и документ есть в map по самому редкому слову */
+                             if (doc_id_absolute_index.count(item.doc_id))
+                                 doc_id_absolute_index[item.doc_id] += item.count;
+                         });
+            }
+        }
 
-    std::vector<RelativeIndex> vector_relative_index;
-    for(auto& item: sorted_absolute_index)
-    {
-        RelativeIndex r{.doc_id = (size_t)item.second, .rank = (float)item.first / sorted_absolute_index.begin()->first};
-        vector_relative_index.emplace_back(r);
-    }
+        std::multimap<size_t, float, std::greater<>> sorted_absolute_index;
+        for (auto &e : doc_id_absolute_index) {
+            sorted_absolute_index.insert(std::pair(e.second, e.first));
+        }
 
+        std::vector<RelativeIndex> vector_relative_index;
+        for (auto &item: sorted_absolute_index) {
+            RelativeIndex r{.doc_id = (size_t) item.second, .rank = (float) item.first /
+                                                                    sorted_absolute_index.begin()->first};
+            vector_relative_index.emplace_back(r);
+        }
 
+        uniqueMutex.lock();
         ref.emplace_back(vector_relative_index);
-    indexMutex.unlock();
+        uniqueMutex.unlock();
+    }
 }
 
 
