@@ -89,6 +89,9 @@ TEST(TestCaseSearchServer, TestSimple) {
                     {2, 1},
                     {0, 0.7},
                     {1, 0.3}
+            },
+            {
+
             }
     };
 

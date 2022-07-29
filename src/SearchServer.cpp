@@ -100,6 +100,15 @@ void SearchServer::ThreadSearch(const std::string &query, std::vector<std::vecto
         ref.emplace_back(vector_relative_index);
         uniqueMutex.unlock();
     }
+    else
+    {
+        std::vector<RelativeIndex> vector_relative_index;
+        uniqueMutex.lock();
+        ref.emplace_back(vector_relative_index);
+        uniqueMutex.unlock();
+
+    }
+
 }
 
 
