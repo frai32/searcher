@@ -5,19 +5,24 @@
 
 std::vector<std::vector<RelativeIndex>> SearchServer::search(const std::vector<std::string> &queries_input) {
 
-    std::vector<std::vector<RelativeIndex>> allIndexes;
+    std::vector<std::vector<RelativeIndex>> allIndexes(queries_input.size());
     std::vector<std::thread> requestsTreads;
     for(size_t i = 0; i<queries_input.size(); ++i)
     {
-       requestsTreads.emplace_back(&SearchServer::ThreadSearch, this,  queries_input[i], std::ref(allIndexes)).join();
+       requestsTreads.emplace_back(&SearchServer::ThreadSearch, this,  queries_input[i], std::ref(allIndexes[i]));
     }
+
+    for(size_t i = 0; i<queries_input.size(); ++i)
+    {
+        requestsTreads[i].join();
+    }
+
 
     return allIndexes;
 }
 
 SearchServer::SearchServer(InvertedIndex &idx) : _index(idx){
-    //ConverterJSON json;
-    //_index.UpdateDocumentBase(json.getTextDocument());
+
 }
 
 std::vector<std::string> SearchServer::parse_request_into_vector(const std::string &str) {
@@ -47,13 +52,13 @@ std::map<std::string, float> SearchServer::get_indexes_for_request_words(std::ve
     return m;
 }
 
-void SearchServer::ThreadSearch(const std::string &query, std::vector<std::vector<RelativeIndex>>& ref) {
+void SearchServer::ThreadSearch(const std::string &query, std::vector<RelativeIndex>& ref) {
 
     std::unique_lock<std::mutex> uniqueMutex (indexMutex, std::defer_lock);
 
     uniqueMutex.lock();
         auto dict = _index.GetFreq_Dictionary();
-   uniqueMutex.unlock();
+    uniqueMutex.unlock();
 
     std::vector<std::string> vec{parse_request_into_vector(query)};
     std::map<std::string, float> request_absolute_index{get_indexes_for_request_words(vec)};
@@ -96,16 +101,16 @@ void SearchServer::ThreadSearch(const std::string &query, std::vector<std::vecto
             vector_relative_index.emplace_back(r);
         }
 
-        uniqueMutex.lock();
-        ref.emplace_back(vector_relative_index);
-        uniqueMutex.unlock();
+
+        ref = vector_relative_index;
+
     }
     else
     {
         std::vector<RelativeIndex> vector_relative_index;
-        uniqueMutex.lock();
-        ref.emplace_back(vector_relative_index);
-        uniqueMutex.unlock();
+
+        ref = vector_relative_index;
+
 
     }
 

@@ -48,7 +48,7 @@ private:
 
     std::map<std::string, float> get_indexes_for_request_words(std::vector<std::string>& vec);
 
-    void ThreadSearch(const std::string &query, std::vector<std::vector<RelativeIndex>>& ref);
+    void ThreadSearch(const std::string &query, std::vector<RelativeIndex>& ref);
 
     InvertedIndex _index;
 
