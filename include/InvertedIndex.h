@@ -41,9 +41,6 @@ public:
     */
     std::vector<Entry> GetWordCount(const std::string& word);
 
-    void ShowDictionaryMap();
-
-
     std::map<std::string, std::vector<Entry>> GetFreq_Dictionary();
 };
 

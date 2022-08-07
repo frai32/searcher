@@ -7,8 +7,6 @@ using namespace  nlohmann;
 
 void showComands();
 
-
-
 int main() {
    ConverterJSON j;
 

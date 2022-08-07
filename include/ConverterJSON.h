@@ -40,7 +40,7 @@ public:
     void putAnswers(std::vector<std::vector<RelativeIndex>>);
 
     /**
-     * Проверка есть на корекктность файла config.json
+     * Проверка на корекктность файла config.json
      */
      void checkConfigs();
      void checkRequests();

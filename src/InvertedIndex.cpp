@@ -36,15 +36,6 @@ std::vector<Entry> InvertedIndex::GetWordCount(const std::string &word) {
     return dictionary;
 }
 
-void InvertedIndex::ShowDictionaryMap() {
-
-    for(auto pair : freq_dictionary)
-    {
-        for(auto entry : pair.second)
-            std::cout<<"world: "<<pair.first<<" pairs: "<<entry.doc_id<<" "<<entry.count<<std::endl;
-    }
-}
-
 std::map<std::string, std::vector<Entry>> InvertedIndex::GetFreq_Dictionary() {
     return freq_dictionary;
 }
