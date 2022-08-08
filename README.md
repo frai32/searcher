@@ -67,5 +67,37 @@ Project contain the following classes:
 * CONFIGMissingExeption class for config.json file related errors, this class successor of exeption class and have ovveride what() method	
 		
 		
-		>sdasdasd
-			
+## Example
+
+The following example will show the basic operation of the application.
+
+	while(isWork) /
+    {
+        std::cout<<"input command: ";
+        std::cin>>comand;
+		
+        if(comand == "?")
+        {
+            showComands(); //Type '?' for showing comand list
+        }
+        else if(comand == "q") // finsh the program
+        {
+            std::cout<<"finish\n";
+            isWork = false;
+        }
+        else if(comand == "s") //Make search
+        {
+            std::cout<<"start searching\n";
+            ConverterJSON converter;
+            InvertedIndex idx;
+            idx.UpdateDocumentBase(converter.getTextDocument()); //Get information from *.txt files
+            SearchServer srv(idx);
+            converter.putAnswers(srv.search(converter.GetRequests()));// Put result to answer.json
+
+            std::cout<<"Search completed. Check answers.json\n";
+        }
+        else
+        {
+            std::cout<<"Wrong command\n";
+        }
+    }	
