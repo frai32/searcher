@@ -1,12 +1,12 @@
 #include "InvertedIndex.h"
 
-void InvertedIndex::UpdateDocumentBase(std::vector<std::string> input_docs) {
+void InvertedIndex::UpdateDocumentBase(const std::vector<std::string>& input_docs) {
 
     docs = input_docs;
 
-    for(size_t i = 0; i<docs.size(); ++i)
+    for(auto& doc : docs)
     {
-        std::istringstream fileString(docs[i]);
+        std::istringstream fileString(doc);
         while (!fileString.eof())
         {
             std::string singlString;

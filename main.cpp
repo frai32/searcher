@@ -86,8 +86,6 @@ int main() {
 void showComands()
 {
     std::cout<<"? - comand list\n";
-    //std::cout<<"r - show requests\n";
-    //std::cout<<"rl - show responsesLimit\n";
     std::cout<<"s - make search\n";
     std::cout<<"q - exit from app\n";
 }
