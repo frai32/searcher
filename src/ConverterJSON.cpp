@@ -1,6 +1,6 @@
 #include "ConverterJSON.h"
 
-std::vector<std::string> ConverterJSON::getTextDocument() {
+std::vector<std::string> ConverterJSON::GetTextDocument() {
     nlohmann::json JSONservant;
     inputFile.open("config.json");
     std::vector<std::string>wordsInFilesVector;

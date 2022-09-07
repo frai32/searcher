@@ -69,7 +69,7 @@ int main() {
             std::cout<<"start searching\n";
             ConverterJSON converter;
             InvertedIndex idx;
-            idx.UpdateDocumentBase(converter.getTextDocument());
+            idx.UpdateDocumentBase(converter.GetTextDocument());
             SearchServer srv(idx);
             converter.putAnswers(srv.search(converter.GetRequests()));
 
