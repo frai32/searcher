@@ -71,7 +71,7 @@ Project contain the following classes:
 
 The following example will show the basic operation of the application.
 
-	while(isWork) /
+	while(isWork) 
     {
         std::cout<<"input command: ";
         std::cin>>comand;
